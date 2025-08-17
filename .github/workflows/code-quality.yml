@@ -1,0 +1,114 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Run Detekt
+      run: ./gradlew detekt
+      continue-on-error: true
+      
+    - name: Run Ktlint
+      run: ./gradlew ktlintCheck
+      continue-on-error: true
+      
+    - name: Run Android Lint
+      run: ./gradlew lintDebug
+      
+    - name: Upload Detekt results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: detekt-results
+        path: app/build/reports/detekt/
+        
+    - name: Upload Ktlint results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: ktlint-results
+        path: app/build/reports/ktlint/
+        
+    - name: Upload Lint results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: android-lint-results
+        path: app/build/reports/lint-results-debug.html
+        
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          let comment = '## 代码质量检查结果\n\n';
+          
+          // Check if lint results exist
+          try {
+            if (fs.existsSync('app/build/reports/lint-results-debug.html')) {
+              comment += '✅ Android Lint 检查完成\n';
+            }
+          } catch (e) {
+            comment += '❌ Android Lint 检查失败\n';
+          }
+          
+          comment += '\n详细报告请查看 Actions 中的 Artifacts。';
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
