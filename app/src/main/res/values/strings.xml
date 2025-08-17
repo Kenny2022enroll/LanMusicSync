@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LAN Music Sync</string>
+    
+    <!-- Main Activity -->
+    <string name="main_title">局域网音乐同步</string>
+    <string name="create_host">创建主设备</string>
+    <string name="join_host">加入主设备</string>
+    <string name="settings">设置</string>
+    
+    <!-- Host Activity -->
+    <string name="host_mode">主设备模式</string>
+    <string name="waiting_for_clients">等待设备连接...</string>
+    <string name="connected_devices">已连接设备</string>
+    <string name="start_music">开始播放</string>
+    <string name="stop_music">停止播放</string>
+    <string name="select_music">选择音乐</string>
+    
+    <!-- Client Activity -->
+    <string name="client_mode">从设备模式</string>
+    <string name="searching_hosts">搜索主设备...</string>
+    <string name="available_hosts">可用主设备</string>
+    <string name="connect">连接</string>
+    <string name="disconnect">断开连接</string>
+    <string name="connected_to">已连接到</string>
+    
+    <!-- Music Player -->
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
+    <string name="previous">上一首</string>
+    <string name="next">下一首</string>
+    <string name="volume">音量</string>
+    
+    <!-- Status Messages -->
+    <string name="wifi_direct_not_supported">设备不支持Wi-Fi Direct</string>
+    <string name="wifi_direct_disabled">请启用Wi-Fi Direct</string>
+    <string name="permission_required">需要位置权限以使用Wi-Fi Direct</string>
+    <string name="connection_failed">连接失败</string>
+    <string name="connection_lost">连接丢失</string>
+    <string name="sync_error">同步错误</string>
+    
+    <!-- Notifications -->
+    <string name="music_sync_channel">音乐同步服务</string>
+    <string name="music_sync_channel_description">用于音乐同步播放的后台服务</string>
+    <string name="music_playing">正在播放音乐</string>
+    <string name="music_syncing">正在同步音乐</string>
+    
+    <!-- Common -->
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="retry">重试</string>
+    <string name="loading">加载中...</string>
+    <string name="error">错误</string>
+    <string name="success">成功</string>
+</resources>
+
